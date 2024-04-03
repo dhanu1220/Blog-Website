@@ -18,14 +18,23 @@ export const getPosts = (req, res) => {
 };
 
 export const getPost = (req, res) => {
-  const q =
-    "SELECT p.id, `username`, `title`, `desc`, p.img, u.img AS userImg, `cat`,`date` FROM users u JOIN posts p ON u.id = p.uid WHERE p.id = ? ";
+  const postId = req.params.id; // Assuming `id` is passed as a route parameter
+const q = "SELECT * FROM posts p JOIN users u ON p.uid = u.id WHERE p.id = ?";
 
-  db.query(q, [req.params.id], (err, data) => {
-    if (err) return res.status(500).json(err);
 
-    return res.status(200).json(data[0]);
-  });
+db.query(q, [postId], (err, data) => {
+  if (err) {
+    console.error("Error fetching post:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+
+  if (data.length === 0) {
+    return res.status(404).json({ error: "Post not found" });
+  }
+
+  return res.status(200).json(data[0]);
+});
+
 };
 
 export const addPost = (req, res) => {
@@ -55,40 +64,35 @@ export const addPost = (req, res) => {
 };
 
 export const deletePost = (req, res) => {
-  const token = req.cookies.access_token;
-  if (!token) return res.status(401).json("Not authenticated!");
+  const postId = req.params.id;
+  const query = "DELETE FROM posts WHERE `id` = ?";
 
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
+  db.query(query, [postId], (err, data) => {
+    if (err) return res.status(500).json(err);
 
-    const postId = req.params.id;
-    const q = "DELETE FROM posts WHERE `id` = ? AND `uid` = ?";
+    // Check if any rows were affected
+    if (data.affectedRows === 0) {
+      return res.status(404).json("Post not found.");
+    }
 
-    db.query(q, [postId, userInfo.id], (err, data) => {
-      if (err) return res.status(403).json("You can delete only your post!");
-
-      return res.json("Post has been deleted!");
-    });
+    return res.json("Post has been deleted!");
   });
 };
 
+
+
+// Update post controller
 export const updatePost = (req, res) => {
-  const token = req.cookies.access_token;
-  if (!token) return res.status(401).json("Not authenticated!");
+  const postId = req.params.id;
+  const { title, desc } = req.body;
 
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
+  const query =
+    'UPDATE posts SET `title`=?, `desc`=? WHERE `id`=?';
 
-    const postId = req.params.id;
-    const q =
-      "UPDATE posts SET `title`=?,`desc`=?,`img`=?,`cat`=? WHERE `id` = ? AND `uid` = ?";
+  const values = [title, desc, postId];
 
-    const values = [req.body.title, req.body.desc, req.body.img, req.body.cat];
-
-    db.query(q, [...values, postId, userInfo.id], (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.json("Post has been updated.");
-    });
+  db.query(query, values, (err, result) => {
+    if (err) return res.status(500).json(err);
+    return res.json('Post has been updated.');
   });
 };
-
