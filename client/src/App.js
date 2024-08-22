@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Write from "./pages/Write";
 import Home from "./pages/Home";
 import Single from "./pages/Single";
+import Chatbot from "./pages/Chatbot";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./style.scss"
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "/write",
         element: <Write />,
+      },
+      {
+        path: "/chatbot",
+        element: <Chatbot />,
       },
     ],
   },

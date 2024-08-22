@@ -1,7 +1,3 @@
-// export const addPost  = (req,res)=>{
-//     res.json("from controller")
-// }
-
 import { db } from "../db.js";
 import jwt from "jsonwebtoken";
 
@@ -18,7 +14,7 @@ export const getPosts = (req, res) => {
 };
 
 export const getPost = (req, res) => {
-  const postId = req.params.id; // Assuming `id` is passed as a route parameter
+  const postId = req.params.id; 
 const q = "SELECT * FROM posts p JOIN users u ON p.uid = u.id WHERE p.id = ?";
 
 
@@ -36,7 +32,7 @@ db.query(q, [postId], (err, data) => {
 });
 
 };
-
+ 
 export const addPost = (req, res) => {
   const token = req.cookies.access_token;
   if (!token) return res.status(401).json("Not authenticated!");
@@ -56,7 +52,7 @@ export const addPost = (req, res) => {
       userInfo.id,
     ];
 
-    db.query(q, [values], (err, data) => {
+    db.query(q, [values], (err, data) => {//execute q
       if (err) return res.status(500).json(err);
       return res.json("Post has been created.");
     });
@@ -70,7 +66,6 @@ export const deletePost = (req, res) => {
   db.query(query, [postId], (err, data) => {
     if (err) return res.status(500).json(err);
 
-    // Check if any rows were affected
     if (data.affectedRows === 0) {
       return res.status(404).json("Post not found.");
     }
@@ -80,9 +75,10 @@ export const deletePost = (req, res) => {
 };
 
 
-
-// Update post controller
 export const updatePost = (req, res) => {
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json("Not authenticated!");
+
   const postId = req.params.id;
   const { title, desc } = req.body;
 
@@ -95,4 +91,5 @@ export const updatePost = (req, res) => {
     if (err) return res.status(500).json(err);
     return res.json('Post has been updated.');
   });
+
 };

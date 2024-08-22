@@ -43,12 +43,10 @@ const Single = () => {
       setIsEditing(false);
       setPostData({ ...postData, title: editedTitle, desc: editedDesc });
     } catch (error) {
+      alert("Invalid user")
       console.error('Error updating post:', error);
-      // Handle error, e.g., display error message to user
     }
   };
-  
-   
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -70,14 +68,13 @@ const Single = () => {
       console.error("Error deleting post:", error);
     }
   };
-  
 
   return (
     <div className='Single'>
       <div className="content">
         <img src={`../upload/${postData.img}`} alt="" />
         <div className="user">
-          <img src={postData.userImg} alt="" />
+        <img src="/upload/girl.jpg" alt="Ice Cream" />
           <div className="info">
             <span>{postData.username}</span>
             <p>posted {postData.date}</p>
@@ -88,8 +85,40 @@ const Single = () => {
           </div>
         </div>
         <h1>{postData.title}</h1>
-        <p>{postData.desc}</p>
+        <div>{postData.desc}</div>
       </div>
+
+      <div className="blogs-container">
+  <div className="blog-container">
+  <div className="blog-image">
+      <img src="/upload/openai.jpg" alt="ChatGPT" />
+    </div>
+    <div className="blog-content">
+      <h2>Unveiling the Power of ChatGPT: A Small Blog</h2>
+      <p>
+        In today's digital age, artificial intelligence (AI) is revolutionizing various aspects of our lives. One such innovation is ChatGPT, a powerful language model developed by OpenAI. Let's delve into the world of ChatGPT and explore its capabilities.
+      </p>
+    </div>
+
+  </div>
+
+  <div className="blog-container">
+  <div className="blog-image">
+      <img src="/upload/cream.jpg" alt="Ice Cream" />
+    </div>
+    <div className="blog-content">
+      <h2>The Sweet Journey of Ice Cream</h2>
+      <p>
+        Ice cream, a delightful treat loved by people of all ages, has a fascinating history and a wide array of flavors. Let's embark on a sweet journey to explore the world of ice cream. Whether enjoyed in a cone, cup, or sandwiched between cookies, ice cream brings joy to every bite.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+
+
+
       <Menu />
       <Dialog open={isEditing} onClose={handleCancel}>
         <DialogTitle>Edit Post</DialogTitle>
