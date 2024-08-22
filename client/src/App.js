@@ -1,4 +1,3 @@
-
 import {
   createBrowserRouter,
   RouterProvider,
@@ -12,14 +11,25 @@ import Single from "./pages/Single";
 import Chatbot from "./pages/Chatbot";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import "./style.scss"
+import "./style.scss";
 
+// Main layout with Navbar, Outlet, and Footer
 const Layout = () => {
   return (
     <>
       <Navbar />
       <Outlet />
       <Footer />
+    </>
+  );
+};
+
+// Chat layout with Navbar and Outlet only (no Footer)
+const ChatLayout = () => {
+  return (
+    <>
+      <Navbar />
+      <Outlet />
     </>
   );
 };
@@ -41,10 +51,6 @@ const router = createBrowserRouter([
         path: "/write",
         element: <Write />,
       },
-      {
-        path: "/chatbot",
-        element: <Chatbot />,
-      },
     ],
   },
   {
@@ -54,6 +60,16 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/chatbot", 
+    element: <ChatLayout />,
+    children: [
+      {
+        path: "",
+        element: <Chatbot />,
+      },
+    ],
   },
 ]);
 
